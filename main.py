@@ -1,5 +1,6 @@
 from google.cloud import speech_v1
 from google.cloud.speech_v1 import enums
+from auditok import split
 from os import walk
 import io
 import os
@@ -12,6 +13,19 @@ import time
 
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="assets/Cloud_Speech_API.json"
+
+def find_speech_regions_V2(source_file):
+	"""
+    pip install forked-auditok-split-without-data
+    """
+	audio_regions = split(source_file)
+	regions = []
+	for region in audio_regions:
+		region_start = float(region.get('start'))
+		region_end = float(region.get('end'))
+		regions.append((region_start,region_end))
+	return regions
+
 
 def find_speech_regions(source_file, frame_width=4096, min_region_size=0.5, max_region_size=10,percent=0.2):
     """
